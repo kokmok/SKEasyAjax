@@ -88,3 +88,5 @@ onStart: function() {}, //Called when the ajax request starts
 onComplete: function() {}, //Called when the ajax request ends
 onError: function(error) {} //Called when an error is triggered ( $.ajax onError function or when plugin receive a status 0 in response )
 ```
+
+PHP file is given as an example. Feel free to write your own :)
