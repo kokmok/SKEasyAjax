@@ -70,6 +70,9 @@ function ajaxError(error)
 The plugin uses lots of data atributes.
 
 `data-action=""` is used to ask a specific action to the server.
+
 `data-params=""` is used to send your data to the server . it's an array json encoded. (in php `json_encode(array());` )
+
 `data-url=""` is the path for your server request. You can so use different path for your requests. You can alternativly use a direct plugin option if you have only one ajax path. This data attribute override the plugin option.
+
 `data-callBack=""` is the name of the callback function you want to call when request succeed. 
