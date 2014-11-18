@@ -73,6 +73,16 @@ The plugin uses lots of data atributes.
 
 `data-params=""` is used to send your data to the server . it's an array json encoded. (in php `json_encode(array());` )
 
-`data-url=""` is the path for your server request. You can so use different path for your requests. You can alternativly use a direct plugin option if you have only one ajax path. This data attribute override the plugin option.
+`data-url=""` is the path for your server request. So you can use different path for your requests. You can alternativly use a direct plugin option if you have only one ajax path. This data attribute override the plugin option.
 
 `data-callBack=""` is the name of the callback function you want to call when request succeed. 
+
+
+And it has got also some options.
+
+```
+defaultAjaxTargetUrl :'', // The default ajax tarhet path (can be overrided by data-url attribute
+onStart: function() {}, //Called when the ajax request starts
+onComplete: function() {}, //Called when the ajax request ends
+onError: function(error) {} //Called when an error is triggered ( $.ajax onError function or when plugin receive a status 0 in response )
+```
