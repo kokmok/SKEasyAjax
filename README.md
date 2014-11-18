@@ -29,7 +29,7 @@ $(document).ready
                     onStart : ajaxStart,
                     onComplete : ajaxComplete,
                     onError : ajaxError,
-                    defaultAjaxTargetUrl:'test.php'
+                    defaultAjaxTargetUrl:'defaultAjaxTarget.php'
                 }
             );
 
@@ -77,8 +77,10 @@ The plugin uses lots of data atributes.
 
 `data-callBack=""` is the name of the callback function you want to call when request succeed. 
 
+`data-token=""` if you need a token use this param
 
-And it has got also some options.
+
+###And it has got also some options.
 
 ```
 defaultAjaxTargetUrl :'', // The default ajax tarhet path (can be overrided by data-url attribute
