@@ -41,18 +41,20 @@ function callBackFunction(params)
     console.log('callBack'+params);
 }
 
-function ajaxStart()
+function ajaxStart(target)
 {
     /*
     * triggered when ajax request starts.
     * Here you can show a loader or something
+    * target is the element that triggered the ajax
     */
 }
-function ajaxComplete()
+function ajaxComplete(target)
 {
     /*
     * triggered when ajax request is complete.
     * Here you can hide a loader or something
+    * target is the element that triggered the ajax
     */
     
 }
