@@ -22,13 +22,15 @@ function callBackFunction(params)
     console.log(params);
 }
 
-function ajaxStart()
+function ajaxStart(target)
 {
     console.log('start');
+    console.log(target);
 }
-function ajaxComplete()
+function ajaxComplete(target)
 {
     console.log('complete');
+    console.log(target);
 }
 function ajaxError(error)
 {

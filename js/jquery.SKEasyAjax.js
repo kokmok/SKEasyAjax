@@ -5,8 +5,8 @@
         
         var defaults = {
             defaultAjaxTargetUrl :'',
-            onStart: function() {},
-            onComplete: function() {},
+            onStart: function(target) {},
+            onComplete: function(target) {},
             onError: function(error) {}
         };
 
@@ -39,7 +39,7 @@
         var skEasyAjaxHandler = function(e)
         {
             
-            plugin.settings.onStart();
+            
             
             var params = $element.data('params');
             
@@ -69,7 +69,8 @@
             
             ajaxData.action= $element.data('action');
             
-
+            
+            plugin.settings.onStart($element);
     
             $.ajax
             ({
@@ -78,14 +79,14 @@
                 data : ajaxData,
                 success : function(response)
                 {
-                    plugin.settings.onComplete();
+                    plugin.settings.onComplete($element);
                     skEasyAjaxOnSuccess(response);
                     
 
                 },
                 error : function(e)
                 {
-                    plugin.settings.onComplete();
+                    plugin.settings.onComplete($element);
                     plugin.settings.onError(e);
                     
                    
