@@ -7,7 +7,8 @@
             defaultAjaxTargetUrl :'',
             onStart: function(target) {},
             onComplete: function(target) {},
-            onError: function(error) {}
+            onError: function(error) {},
+            targetSelector:'.ajax_action'
         };
 
 
@@ -24,25 +25,54 @@
             plugin.settings = $.extend({}, defaults, options);
             skEasyAjaxBinder();
         };
+        
+        plugin.refresh = function()
+        {
+            ajaxUIRefresh();
+        }
 
         
         var skEasyAjaxBinder = function() {
+            log(element);
+            $element.each(function(){
+                log($(this));
+                if ($(this).prop('tagName') == 'FORM')
+                {
+                    $(this).bind('submit',skEasyAjaxHandler);
+                    log('form');
+                }
+                else
+                {
+                    $(this).bind('click',skEasyAjaxHandler);
+                }
+                
+            });
             
-            $element.bind('click',skEasyAjaxHandler);
+            
+            
         };
         var ajaxUIRefresh = function() {
+            $element.each(function(){
+                $element.unbind('click',skEasyAjaxHandler);
+                $element.unbind('submit',skEasyAjaxHandler);
+                
+            });
+            $element = $(plugin.settings.targetSelector);
             
-            $element.unbind('click',skEasyAjaxHandler);
+            element = $element.get();
             skEasyAjaxBinder();
         };
         
         var skEasyAjaxHandler = function(e)
         {
+            log(e.target);
             
             
+            var $element = $(e.target);
+            log('e.target');
+            log($element);
             
             var params = $element.data('params');
-            
 
             if ($element.attr('data-callBack') != undefined)
             {
@@ -69,6 +99,12 @@
             
             ajaxData.action= $element.data('action');
             
+            if ($element.prop('tagName') == 'FORM')
+            {
+                e.preventDefault();
+                ajaxData = $element.MytoJson();
+                
+            }
             
             plugin.settings.onStart($element);
     
@@ -163,3 +199,121 @@
 
 })(jQuery);
 
+jQuery.fn.MytoJson = function(options) {
+
+    options = jQuery.extend({}, options);
+
+    var self = this,
+        json = {},
+        push_counters = {},
+        patterns = {
+            "validate": /^[a-zA-Z][a-zA-Z0-9_]*(?:\[(?:\d*|[a-zA-Z0-9_]+)\])*$/,
+            "key":      /[a-zA-Z0-9_]+|(?=\[\])/g,
+            "push":     /^$/,
+            "fixed":    /^\d+$/,
+            "named":    /^[a-zA-Z0-9_]+$/
+        };
+
+
+    this.build = function(base, key, value){
+        base[key] = value;
+        return base;
+    };
+
+    this.push_counter = function(key){
+        if(push_counters[key] === undefined){
+            push_counters[key] = 0;
+        }
+        return push_counters[key]++;
+    };
+    
+    var inputs = jQuery(this).serializeArray();
+//    console.log(jQuery(this).tagName);
+//    console.log(jQuery(this).serializeArray());
+//    console.log(jQuery(this).find('input[type=checkbox]').length);
+    jQuery(this).find('input[type=checkbox]').each(
+                    function() {
+                        if ($(this).attr('checked') == 'checked')
+                        {
+                            var checkbox = $(this);
+                            var present = false;
+                            $(inputs).each
+                            (
+                                function()
+                                {
+                                    if (this.name == checkbox.attr('name') && this.value == checkbox.val())
+                                    {
+                                        present = true;
+                                        return;
+                                    }
+                                });
+                            if (!present)
+                            {
+                                inputs.push({'name':$(this).attr('name'),'value':$(this).val()});
+                            }
+                            
+//                            console.log('checked');
+                        }
+                        
+                    });
+                    
+    console.log(inputs);
+    jQuery.each(inputs, function(){
+
+        // skip invalid keys
+        // Mis en commentaire pour le getWallPost
+//        if(!patterns.validate.test(this.name)){
+//            console.log(this.name);
+//            return;
+//        }
+
+        var k,
+            keys = this.name.match(patterns.key),
+            merge = this.value,
+            reverse_key = this.name;
+
+        while((k = keys.pop()) !== undefined){
+
+            // adjust reverse_key
+            reverse_key = reverse_key.replace(new RegExp("\\[" + k + "\\]$"), '');
+
+            // push
+            if(k.match(patterns.push)){
+                merge = self.build([], self.push_counter(reverse_key), merge);
+            }
+
+            // fixed
+            else if(k.match(patterns.fixed)){
+                merge = self.build([], k, merge);
+            }
+
+            // named
+            else if(k.match(patterns.named)){
+                merge = self.build({}, k, merge);
+            }
+        }
+//        console.log(json);
+
+        json = jQuery.extend(true, json, merge);
+    });
+
+
+    return json;
+}
+
+jQuery.fn.serializeObject = function()
+{
+   var o = {};
+   var a = this.serializeArray();
+   jQuery.each(a, function() {
+       if (o[this.name]) {
+           if (!o[this.name].push) {
+               o[this.name] = [o[this.name]];
+           }
+           o[this.name].push(this.value || '');
+       } else {
+           o[this.name] = this.value || '';
+       }
+   });
+   return o;
+};
