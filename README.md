@@ -85,10 +85,15 @@ The plugin uses lots of data atributes.
 ###And it has got also some options.
 
 ```
-defaultAjaxTargetUrl :'', // The default ajax tarhet path (can be overrided by data-url attribute
+defaultAjaxTargetUrl :'', // The default ajax target path (can be overrided by data-url attribute
 onStart: function() {}, //Called when the ajax request starts
 onComplete: function() {}, //Called when the ajax request ends
 onError: function(error) {} //Called when an error is triggered ( $.ajax onError function or when plugin receive a status 0 in response )
+```
+
+###It also have a refresh public function
+```
+$(selector).skEasyAjax().refresh() // Refreshs plugin and bind new matching dom elements
 ```
 
 PHP file is given as an example. Feel free to write your own :)
