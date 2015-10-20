@@ -13,6 +13,7 @@ $(document).ready
                 }
             );
 
+
     }
 );
 
@@ -36,5 +37,3 @@ function ajaxError(error)
 {
     console.log(error);
 }
-
-
