@@ -49,6 +49,7 @@
 
         };
         var ajaxUIRefresh = function() {
+            
             $element.each(function(){
                 $element.unbind('click',skEasyAjaxHandler);
                 $element.unbind('submit',skEasyAjaxHandler);
@@ -94,34 +95,48 @@
             if ($element.prop('tagName') == 'FORM')
             {
                 e.preventDefault();
-                ajaxData = $element.MytoJson();
+//                ajaxData = $element.MytoJson();
+                ajaxData = new FormData(element);
+//                log();
 
             }
 
             plugin.settings.onStart($element);
-
-            $.ajax
-            ({
-                url : ajaxUrl,
-                type : "post",
-                data : ajaxData,
-                success : function(response)
+            
+            var oReq = new XMLHttpRequest();
+            oReq.onload = function(response)
                 {
                     plugin.settings.onComplete($element);
-                    skEasyAjaxOnSuccess(response);
+                    skEasyAjaxOnSuccess(this.responseText);
 
 
-                },
-                error : function(e)
-                {
-                    plugin.settings.onComplete($element);
-                    plugin.settings.onError(e);
-
-
-
-                }
-
-            });
+                };
+            oReq.open("post", ajaxUrl);
+            oReq.send(ajaxData);
+//            $.ajax
+//            ({
+//                url : ajaxUrl,
+//                type : "post",
+//                data : ajaxData,
+//                success : function(response)
+//                {
+//                    plugin.settings.onComplete($element);
+//                    skEasyAjaxOnSuccess(response);
+//
+//
+//                },
+//                contentType: 'multipart/form-data',
+//                processData: false,
+//                error : function(e)
+//                {
+//                    plugin.settings.onComplete($element);
+//                    plugin.settings.onError(e);
+//
+//
+//
+//                }
+//
+//            });
         };
 
 
@@ -220,7 +235,6 @@ jQuery.fn.MytoJson = function(options) {
     };
 
     var inputs = jQuery(this).serializeArray();
-
     jQuery(this).find('input[type=checkbox]').each(
                     function() {
                         if ($(this).attr('checked') == 'checked')
@@ -246,7 +260,17 @@ jQuery.fn.MytoJson = function(options) {
                         }
 
                     });
-
+    $(this).find('input[type=file]').each(function(index,element)
+    {
+//        var name = $(element).attr('name')
+//        var encoded = encodeURIComponent($element.val());
+//        var merge = {};
+//        merge[$(element).attr('name')] = encodeURIComponent($(element).val());
+//        merge = {name: encodeURIComponent($element.val())};
+//        json = jQuery.extend(true, json, merge);
+        inputs.push({'name':$(this).attr('name'),'value':encodeURIComponent($(this).val())});
+        
+    })
     jQuery.each(inputs, function(){
 
 
@@ -285,19 +309,4 @@ jQuery.fn.MytoJson = function(options) {
     return json;
 }
 
-jQuery.fn.serializeObject = function()
-{
-   var o = {};
-   var a = this.serializeArray();
-   jQuery.each(a, function() {
-       if (o[this.name]) {
-           if (!o[this.name].push) {
-               o[this.name] = [o[this.name]];
-           }
-           o[this.name].push(this.value || '');
-       } else {
-           o[this.name] = this.value || '';
-       }
-   });
-   return o;
-};
+
